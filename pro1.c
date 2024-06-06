@@ -1,91 +1,67 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 int main() {
-    int *arr;
-    int i, n, pos, key, x, choice, found = 0;
-
-    printf("\nEnter the number of elements in the Array: ");
+    int i, n, a[1000], key, bottom, top, mid, j, temp;
+    double clk;
+    clock_t starttime, endtime;
+    
+    printf("Enter the number of Products: ");
     scanf("%d", &n);
     
-    arr = (int*)malloc(n * sizeof(int));
-
-    printf("\nEnter the elements of the array:\n");
-    for (int i = 0; i < n; i++) {
-        scanf("%d", (arr + i));
+    printf("The Product IDs are:\n");
+    for(i = 0; i < n; i++) {
+        a[i] = rand() % 100;
+        printf("%d\t", a[i]);
     }
-
-    printf("\nThe elements of the array are:\n");
-    for (int i = 0; i < n; i++) {
-        printf("*(arr+%d)=%d\n", i, *(arr + i));
-    }
-
-    do {
-        printf("\n1->INSERT\n2->DELETE\n3->SEARCH\n4->EXIT\n");
-        printf("Enter your choice: ");
-        scanf("%d", &choice);
-
-        switch (choice) {
-            case 1:
-                printf("Enter the element to be inserted: ");
-                scanf("%d", &x);
-                printf("Enter the position at which the element must be inserted: ");
-                scanf("%d", &pos);
-
-                n++;
-                for (i = n - 1; i >= pos; i--) {
-                    *(arr + i) = *(arr + i - 1);
-                }
-                *(arr + pos - 1) = x;
-
-                printf("\nThe elements of the array are:\n");
-                for (int i = 0; i < n; i++) {
-                    printf("*(arr+%d)=%d\n", i, *(arr + i));
-                }
-                break;
-
-            case 2:
-                printf("Enter the position of the element to be deleted: ");
-                scanf("%d", &pos);
-
-                for (int i = pos; i <= n - 1; i++) {
-                    *(arr + i - 1) = *(arr + i);
-                }
-                n--;
-
-                printf("\nThe elements of the array are:\n");
-                for (int i = 0; i < n; i++) {
-                    printf("*(arr+%d)=%d\n", i, *(arr + i));
-                }
-                break;
-
-            case 3:
-                found = 0;
-                printf("Enter the element to be searched: ");
-                scanf("%d", &key);
-
-                for (int i = 0; i < n; i++) {
-                    if (*(arr + i) == key) {
-                        found = 1;
-                        printf("The key element %d is found at position %d\n", key, i + 1);
-                        break;
-                    }
-                }
-
-                if (found == 0) {
-                    printf("The key element is not present in the array\n");
-                }
-                break;
-
-            case 4:
-                exit(1);
-
-            default:
-                printf("Invalid choice. Please enter a valid option.\n");
-                break;
+    printf("\n");
+    
+    // Bubble sort to sort the product IDs
+    for(i = 0; i < n - 1; i++) {
+        for(j = 0; j < n - i - 1; j++) {
+            if(a[j] > a[j+1]) {
+                temp = a[j];
+                a[j] = a[j+1];
+                a[j+1] = temp;
+            }
         }
-    } while (choice != 4);
-
+    }
+    
+    printf("Sorted Product ID List is:\n");
+    for(i = 0; i < n; i++) {
+        printf("%d\t", a[i]);
+    }
+    printf("\n");
+    
+    printf("Enter the Product ID to be searched: ");
+    scanf("%d", &key);
+    
+    starttime = clock();
+    
+    bottom = 0;
+    top = n - 1;
+    
+    while(bottom <= top) {
+        mid = (bottom + top) / 2;
+        if(key < a[mid]) {
+            top = mid - 1;
+        } else if(key > a[mid]) {
+            bottom = mid + 1;
+        } else {
+            printf("Product found!!\n");
+            printf("Product %d found in position: %d\n", key, mid + 1);
+            break;
+        }
+    }
+    
+    if(bottom > top) {
+        printf("Search failed\n%d not found\n", key);
+    }
+    
+    endtime = clock();
+    clk = (double)(endtime - starttime) / CLOCKS_PER_SEC;
+    printf("Time taken for search: %f seconds\n", clk);
     
     return 0;
 }
